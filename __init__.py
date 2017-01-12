@@ -1,6 +1,7 @@
 from flask import Flask, render_template, flash, request, url_for, redirect
 
 from content_management import content
+from dbconnect import connection
 
 TOPIC_DICT = content()
 
@@ -10,6 +11,15 @@ app = Flask(__name__)
 @app.route('/')
 def homepage():
     return render_template("main.html")
+
+
+@app.route('/register/', methods=['GET', 'POST'])
+def register_page():
+    try:
+        c, conn = connection()
+        return "okay"
+    except Exception as e:
+        return str(e)
 
 
 @app.route('/login/', methods=['GET', 'POST'])
@@ -68,5 +78,5 @@ if __name__ == "__main__":
     app.secret_key = 'super secret key'
     app.config['SESSION_TYPE'] = 'filesystem'
 
-    # app.debug = True
+    app.debug = True
     app.run()
