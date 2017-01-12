@@ -8,5 +8,11 @@ def homepage():
     return render_template("main.html")
 
 
+@app.route('/dashboard/')
+@app.route('/slashboard/')
+def dashboard():
+    return render_template("dashboard.html")
+
+
 if __name__ == "__main__":
     app.run()
