@@ -12,6 +12,11 @@ def homepage():
     return render_template("main.html")
 
 
+@app.route('/login/', methods=['GET', 'POST'])
+def login_page():
+    return render_template("login.html")
+
+
 @app.route('/dashboard/')
 def dashboard():
     flash("flash test!!!")
@@ -21,6 +26,7 @@ def dashboard():
 @app.route('/slashboard/')
 def slashboard():
     try:
+        # intentionally buggy code sentence
         return render_template("dashboard.html", TOPIC_DICT=ssas)
     except Exception as e:
         return render_template("500.html", error=e)
@@ -29,6 +35,11 @@ def slashboard():
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html")
+
+
+@app.errorhandler(405)
+def method_not_found(e):
+    return render_template("405.html")
 
 
 if __name__ == "__main__":
