@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash
+from flask import Flask, render_template, flash, request, url_for, redirect
 
 from content_management import content
 
@@ -14,6 +14,28 @@ def homepage():
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login_page():
+    error = ''
+    try:
+        if request.method == "POST":
+            attempted_username = request.form['username']
+            attempted_password = request.form['password']
+
+            # todo, remove flashing details for a release
+            # flash(attempted_username)
+            # flash(attempted_password)
+
+            # todo, replace it later with a database data comparison
+            if attempted_username == "admin" and attempted_password == "admin":
+                return redirect(url_for('dashboard'))
+            else:
+                error = "Invalid credentials. Try again."
+
+        return render_template("login.html", error=error)
+
+    except Exception as e:
+        flash(e)
+        return render_template("login.html", error=error)
+
     return render_template("login.html")
 
 
@@ -26,7 +48,7 @@ def dashboard():
 @app.route('/slashboard/')
 def slashboard():
     try:
-        # intentionally buggy code sentence
+        # todo, remove the buggy sentence for a release
         return render_template("dashboard.html", TOPIC_DICT=ssas)
     except Exception as e:
         return render_template("500.html", error=e)
