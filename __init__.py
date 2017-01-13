@@ -2,6 +2,7 @@ from flask import Flask, render_template, flash, request, url_for, redirect, ses
 
 from content_management import content
 from dbconnect import connection
+from functools import wraps
 from MySQLdb import escape_string as thwart
 from passlib.hash import sha256_crypt
 from wtforms import Form, BooleanField, TextField, PasswordField, validators
@@ -69,6 +70,18 @@ def register_page():
         return str(e)
 
 
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash("You need to login first")
+            return redirect(url_for('login_page'))
+
+    return wrap
+
+
 @app.route('/login/', methods=['GET', 'POST'])
 def login_page():
     error = ''
@@ -95,6 +108,15 @@ def login_page():
         return render_template("login.html", error=error)
 
     return render_template("login.html")
+
+
+@app.route('/logout/')
+@login_required
+def logout():
+    session.clear()
+    flash("You have been logged out!")
+    gc.collect()
+    return redirect(url_for('dashboard'))
 
 
 @app.route('/dashboard/')
