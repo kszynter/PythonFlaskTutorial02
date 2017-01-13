@@ -25,9 +25,16 @@
 
         <ul class="nav navbar-nav navbar-right">
             <div class="container-fluid" style="margin: 10px 5px 5px 15px">
-                <a href="/support-donate/"> Support&nbsp;&nbsp;&nbsp;</a>
-                <a href="/login/"> Login&nbsp;&nbsp;&nbsp;</a>
-                <a href="/register/"> Sing up&nbsp;&nbsp;&nbsp;</a>
+                <h5>
+                    {% if session.logged_in %}
+                    <a href="/support-donate/"> <span class="glyphicon glyphicon-heart"></span> Support&nbsp;&nbsp;&nbsp;</a>
+                    <a href="/logout/"> <span class="glyphicon glyphicon-log-out"></span> Logout&nbsp;&nbsp;&nbsp;</a>
+                    {% else %}
+                    <a href="/support-donate/"> <span class="glyphicon glyphicon-heart"></span> Support&nbsp;&nbsp;&nbsp;</a>
+                    <a href="/login/"> <span class="glyphicon glyphicon-log-in"></span> Login&nbsp;&nbsp;&nbsp;</a>
+                    <a href="/register/"> <span class="glyphicon glyphicon-pencil"></span> Sign up&nbsp;&nbsp;&nbsp;</a>
+                    {% endif %}
+                </h5>
             </div>
 
         </ul>
