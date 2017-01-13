@@ -6,6 +6,8 @@ from MySQLdb import escape_string as thwart
 from passlib.hash import sha256_crypt
 from wtforms import Form, BooleanField, TextField, PasswordField, validators
 
+from utils import check_password_match
+
 import gc
 
 TOPIC_DICT = content()
@@ -71,24 +73,25 @@ def register_page():
 def login_page():
     error = ''
     try:
+        c, conn = connection()
         if request.method == "POST":
-            attempted_username = request.form['username']
-            attempted_password = request.form['password']
+            result = c.execute("SELECT * FROM users WHERE username = '%s'" % (thwart(request.form['username'])))
+            db_password_hash = c.fetchone()[2]
 
-            # todo, remove flashing details for a release
-            # flash(attempted_username)
-            # flash(attempted_password)
+            if check_password_match(request.form['password'], db_password_hash):
+                session['logged_in'] = True
+                session['username'] = request.form['username']
 
-            # todo, replace it later with a database data comparison
-            if attempted_username == "admin" and attempted_password == "admin":
-                return redirect(url_for('dashboard'))
+                flash("You are now logged in")
+                return redirect(url_for("dashboard"))
             else:
-                error = "Invalid credentials. Try again."
+                error = "Invalid credentials, try again."
 
+        gc.collect()
         return render_template("login.html", error=error)
 
     except Exception as e:
-        flash(e)
+        error = "Invalid credentials, try again."
         return render_template("login.html", error=error)
 
     return render_template("login.html")
