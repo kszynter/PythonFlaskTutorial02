@@ -110,6 +110,14 @@ def login_page():
     return render_template("login.html")
 
 
+@app.route('/include_example/')
+def include_example():
+    try:
+        return render_template("includes_tutorial.html")
+    except Exception, e:
+        return str(e)
+
+
 @app.route('/logout/')
 @login_required
 def logout():
